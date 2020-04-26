@@ -23,8 +23,6 @@ class IRC:
         self.irc.send(("CAP REQ :twitch.tv/commands\r\n").encode())
 
     def parse_line(self, line):
-        print('Debug:', line)
-
         event = {
             'tags': '',
             'code': '',
