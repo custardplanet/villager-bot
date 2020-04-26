@@ -1,7 +1,6 @@
 {
     "server": "irc.chat.twitch.tv",
     "port": 6667,
-    "channels": ["channelname"],
     "nick": "botname",
     "oauth": "oauth token",
     "nookipedia_api_key": "api key"

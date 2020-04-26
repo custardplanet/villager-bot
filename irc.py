@@ -9,8 +9,11 @@ class IRC:
     def __init__(self):  
         self.irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
  
-    def send(self, chan, msg):
+    def privmsg(self, chan, msg):
         self.irc.send(("PRIVMSG #" + chan + " :" + msg + "\r\n").encode())
+
+    def send(self, msg):
+        self.irc.send((msg + "\r\n").encode())
  
     def connect(self, server, port, channels, nick, oauth):
         print("Connecting to", server)
