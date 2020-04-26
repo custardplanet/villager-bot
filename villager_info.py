@@ -31,7 +31,7 @@ class VillagerInfo:
             return
 
         info = r.json()
-        message = f"{info['name']} is a {info['personality'].lower()} {info['species'].lower()}! More info: {info['link']}"
+        message = f"{info['name']} is a {info['personality'].lower()} {info['species'].lower()}, {info['phrase']}! More info: {info['link']}"
         self.irc.send(channel, message)
 
     def run_forever(self):

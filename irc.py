@@ -44,9 +44,7 @@ class IRC:
                 event['channel'] = args[2].strip()
                 if len(parts) == 2:
                     event['message'] = parts[1].strip()
-        #TODO: is this necessary?
         else:
-            print('do we ever get here?')
             parts = line.split(' :')
             event['code'] = parts[0]
             event['message'] = parts[1]
