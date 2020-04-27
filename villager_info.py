@@ -1,6 +1,7 @@
 import requests
 import sqlite3
 import logging
+import datetime
 from logging.handlers import TimedRotatingFileHandler
 
 from irc import IRC
@@ -50,7 +51,7 @@ class VillagerInfo:
             config['oauth'])
         self.irc = irc
 
-    def say_info(self, channel, command):
+    def say_info(self, channel, command, sent_time):
         tokens = command.split()
         if len(tokens) < 2:
             self.irc.privmsg(channel,
@@ -62,12 +63,16 @@ class VillagerInfo:
         url = f'https://nookipedia.com/api/villager/{villager_name}/'
 
         r = requests.get(url, headers=headers)
+        response_time = datetime.datetime.now() - datetime.datetime.fromtimestamp(sent_time / 1000)
+        response_time = response_time.total_seconds()
+
         if r.status_code != 200:
             self.irc.privmsg(channel, 'Couldn\'t find the specified villager :(')
+            self.logger.info(f'{channel} - {response_time} - {villager_name} - NOT FOUND')
             return
 
         info = r.json()
-        self.logger.info(f'{channel} - {info["name"]}')
+        self.logger.info(f'{channel} - {response_time} - {info["name"]}')
         message = f"{info['name']} is a {info['personality'].lower()} {info['species'].lower()}, {info['phrase']}! More info: {info['link']}"
         self.irc.privmsg(channel, message)
 
@@ -115,7 +120,9 @@ class VillagerInfo:
             for event in events:
                 if (event['code'] == 'PRIVMSG' and
                     event['message'].startswith('!villager')):
-                    self.say_info(event['channel'][1:], event['message'])
+                    self.say_info(event['channel'][1:],
+                                  event['message'],
+                                  int(event['tags']['tmi-sent-ts']))
 
                 elif (event['code'] == 'PRIVMSG' and
                       event['channel'][1:] == 'isabellesays' and
