@@ -12,7 +12,7 @@ class VillagerInfo:
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
         
-        handler = TimedRotatingFileHandler(filename='logs/irc.log', when='midnight')
+        handler = TimedRotatingFileHandler(filename='logs/villager_info.log', when='midnight')
         handler.setLevel(logging.DEBUG)
         
         ch = logging.StreamHandler()
