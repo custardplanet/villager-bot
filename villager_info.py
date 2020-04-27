@@ -1,11 +1,31 @@
 import requests
 import sqlite3
+import logging
+from logging.handlers import TimedRotatingFileHandler
+
 from irc import IRC
 
 
 class VillagerInfo:
 
     def __init__(self, config):
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        
+        handler = TimedRotatingFileHandler(filename='logs/irc.log', when='midnight')
+        handler.setLevel(logging.DEBUG)
+        
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.INFO)
+        
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        ch.setFormatter(formatter)
+        
+        logger.addHandler(handler)
+        logger.addHandler(ch)
+        self.logger = logger
+
         self.config = config
 
         conn = sqlite3.connect('villagerinfo.db')
@@ -47,6 +67,7 @@ class VillagerInfo:
             return
 
         info = r.json()
+        self.logger.info(f'{channel} - {info["name"]}')
         message = f"{info['name']} is a {info['personality'].lower()} {info['species'].lower()}, {info['phrase']}! More info: {info['link']}"
         self.irc.privmsg(channel, message)
 
