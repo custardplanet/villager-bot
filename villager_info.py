@@ -2,6 +2,7 @@ import requests
 import sqlite3
 import logging
 import datetime
+import json
 from logging.handlers import TimedRotatingFileHandler
 
 from irc import IRC
@@ -29,6 +30,11 @@ class VillagerInfo:
 
         self.config = config
 
+        with open('final_villager_info.json') as f:
+            villagers = json.load(f)
+
+        self.villagers = villagers[0]
+
         conn = sqlite3.connect('villagerinfo.db')
         cursor = conn.cursor()
 
@@ -52,29 +58,27 @@ class VillagerInfo:
         self.irc = irc
 
     def say_info(self, channel, command, sent_time):
-        tokens = command.split()
+        sent_time = datetime.datetime.fromtimestamp(sent_time / 1000)
+
+        tokens = command.split(None, 1)
         if len(tokens) < 2:
             self.irc.privmsg(channel,
                 'Usage: !villager <villager name>')
             return
 
-        villager_name = tokens[1]
-        headers = {'X-API-KEY': self.config['nookipedia_api_key']}
-        url = f'https://nookipedia.com/api/villager/{villager_name}/'
+        villager_name = tokens[1].lower().replace(' ', '_')
 
-        r = requests.get(url, headers=headers)
-        response_time = datetime.datetime.now() - datetime.datetime.fromtimestamp(sent_time / 1000)
-        response_time = response_time.total_seconds()
-
-        if r.status_code != 200:
+        if villager_name not in self.villagers:
             self.irc.privmsg(channel, 'Couldn\'t find the specified villager :(')
-            self.logger.info(f'{channel} - {response_time} - {villager_name} - NOT FOUND')
+            response_time = datetime.datetime.now() - sent_time
+            self.logger.info(f'{channel} - {response_time.total_seconds()} - {tokens[1]} - {villager_name} - NOT FOUND')
             return
 
-        info = r.json()
-        self.logger.info(f'{channel} - {response_time} - {info["name"]}')
+        info = self.villagers[villager_name]
         message = f"{info['name']} is a {info['personality'].lower()} {info['species'].lower()}, {info['phrase']}! More info: {info['link']}"
         self.irc.privmsg(channel, message)
+        response_time = datetime.datetime.now() - sent_time
+        self.logger.info(f'{channel} - {response_time.total_seconds()} - {info["name"]}')
 
     def handle_add(self, username):
         conn = sqlite3.connect('villagerinfo.db')
@@ -138,5 +142,3 @@ class VillagerInfo:
                       event['channel'][1:] == 'isabellesays' and
                       event['message'].startswith('!leave')):
                     self.handle_remove(event['tags']['display-name'].lower())
-
-
