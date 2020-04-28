@@ -1,6 +1,7 @@
 import socket
 import sys
 import logging
+import time
 from logging.handlers import TimedRotatingFileHandler
  
  
@@ -41,6 +42,8 @@ class IRC:
         self.irc.send(("NICK " + nick + "\r\n").encode())               
         for channel in channels: 
             self.irc.send(("JOIN #" + channel + "\r\n").encode())
+            self.logger.info(f'Joined {channel}')
+            time.sleep(1.6)
         self.irc.send(("CAP REQ :twitch.tv/tags\r\n").encode())
         self.irc.send(("CAP REQ :twitch.tv/commands\r\n").encode())
 
