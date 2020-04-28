@@ -40,12 +40,12 @@ class IRC:
         self.irc.connect((server, port))
         self.irc.send(("PASS " + oauth + "\r\n").encode())
         self.irc.send(("NICK " + nick + "\r\n").encode())               
+        self.irc.send(("CAP REQ :twitch.tv/tags\r\n").encode())
+        self.irc.send(("CAP REQ :twitch.tv/commands\r\n").encode())
         for channel in channels: 
             self.irc.send(("JOIN #" + channel + "\r\n").encode())
             self.logger.info(f'Joined {channel}')
             time.sleep(1.6)
-        self.irc.send(("CAP REQ :twitch.tv/tags\r\n").encode())
-        self.irc.send(("CAP REQ :twitch.tv/commands\r\n").encode())
 
     def parse_line(self, line):
         event = {
