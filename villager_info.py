@@ -98,7 +98,7 @@ class VillagerInfo:
 
         if username in channels:
             self.irc.privmsg('isabellesays', f'I am already in your channel, {username}')
-            self.logger.info(f'{channel} - {username} - ALREADY JOINED')
+            self.logger.info(f'{username} - ALREADY JOINED')
             return
 
         cursor.execute('INSERT INTO channels VALUES (?)', (username,))
