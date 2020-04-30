@@ -3,6 +3,7 @@ import sqlite3
 import logging
 import datetime
 import json
+import difflib
 from logging.handlers import TimedRotatingFileHandler
 
 from irc import IRC
@@ -35,7 +36,7 @@ class VillagerInfo:
 
         self.villagers = villagers[0]
 
-        conn = sqlite3.connect('villagerinfo.db')
+        conn = sqlite3.connect(self.config['db'])
         cursor = conn.cursor()
 
         cursor.execute('CREATE TABLE IF NOT EXISTS channels (username text)')
@@ -69,9 +70,16 @@ class VillagerInfo:
         villager_name = tokens[1].lower().replace(' ', '_')
 
         if villager_name not in self.villagers:
-            self.irc.privmsg(channel, 'Couldn\'t find the specified villager :(')
+            message = 'Couldn\'t find the specified villager :('
+
+            villagers = self.villagers.keys()
+            match = difflib.get_close_matches(villager_name, villagers, n=1)
+            if match:
+                message += f" did you mean {self.villagers[match[0]]['name']}?"
+
+            self.irc.privmsg(channel, message)
             response_time = datetime.datetime.now() - sent_time
-            self.logger.info(f'{channel} - {response_time.total_seconds()} - {tokens[1]} - {villager_name} - NOT FOUND')
+            self.logger.info(f'{channel} - {response_time.total_seconds()} - {tokens[1]} - {villager_name} - {match[0]} - NOT FOUND')
             return
 
         info = self.villagers[villager_name]
@@ -81,7 +89,7 @@ class VillagerInfo:
         self.logger.info(f'{channel} - {response_time.total_seconds()} - {info["name"]}')
 
     def handle_add(self, username):
-        conn = sqlite3.connect('villagerinfo.db')
+        conn = sqlite3.connect(self.config['db'])
         cursor = conn.cursor()
 
         cursor.execute('SELECT username FROM channels')
@@ -90,6 +98,7 @@ class VillagerInfo:
 
         if username in channels:
             self.irc.privmsg('isabellesays', f'I am already in your channel, {username}')
+            self.logger.info(f'{channel} - {username} - ALREADY JOINED')
             return
 
         cursor.execute('INSERT INTO channels VALUES (?)', (username,))
@@ -100,9 +109,10 @@ class VillagerInfo:
 
         self.irc.send(f'JOIN #{username}')
         self.irc.privmsg('isabellesays', f'I have joined your channel, {username}')
+        self.logger.info(f'{username} - JOINED')
 
     def handle_remove(self, username):
-        conn = sqlite3.connect('villagerinfo.db')
+        conn = sqlite3.connect(self.config['db'])
         cursor = conn.cursor()
 
         cursor.execute('DELETE FROM channels WHERE username = (?)', (username,))
@@ -113,9 +123,11 @@ class VillagerInfo:
 
         self.irc.send(f'PART #{username}')
         self.irc.privmsg('isabellesays', f'I have left your channel, @{username}')
+        self.logger.info(f'{username} - LEFT')
 
-    def handle_help(self, channel):
-        self.irc.privmsg(channel, 'Please see the panels below for usage details!')
+    def handle_help(self):
+        self.irc.privmsg('isabellesays', 'Please see the panels below for usage details!')
+        self.logger.info(f'HELPED')
 
     def run_forever(self):
         while True:
@@ -131,7 +143,7 @@ class VillagerInfo:
                 elif (event['code'] == 'PRIVMSG' and
                       event['channel'][1:] == 'isabellesays' and
                       event['message'].startswith('!help')):
-                    self.handle_help(event['channel'][1:])
+                    self.handle_help()
 
                 elif (event['code'] == 'PRIVMSG' and
                       event['channel'][1:] == 'isabellesays' and

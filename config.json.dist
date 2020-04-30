@@ -3,5 +3,6 @@
     "port": 6667,
     "nick": "botname",
     "oauth": "oauth token",
+    "db": "villagerinfo.db",
     "nookipedia_api_key": "api key"
 }
