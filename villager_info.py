@@ -79,7 +79,7 @@ class VillagerInfo:
 
             self.irc.privmsg(channel, message)
             response_time = datetime.datetime.now() - sent_time
-            self.logger.info(f'{channel} - {response_time.total_seconds()} - {tokens[1]} - {villager_name} - {match[0]} - NOT FOUND')
+            self.logger.info(f'{channel} - {response_time.total_seconds()} - {tokens[1]} - {villager_name} - NOT FOUND')
             return
 
         info = self.villagers[villager_name]
