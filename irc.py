@@ -38,10 +38,16 @@ class IRC:
     def connect(self, server, port, channels, nick, oauth):
         self.logger.info(f'Connecting to {server}')
         self.irc.connect((server, port))
-        self.irc.send(("PASS " + oauth + "\r\n").encode())
-        self.irc.send(("NICK " + nick + "\r\n").encode())               
         self.irc.send(("CAP REQ :twitch.tv/tags\r\n").encode())
+        resp = self.irc.recv(2048)
+        print(resp.decode())
         self.irc.send(("CAP REQ :twitch.tv/commands\r\n").encode())
+        resp = self.irc.recv(2048)
+        print(resp.decode())
+        self.irc.send(("PASS " + oauth + "\r\n").encode())
+        self.irc.send(("NICK " + nick + "\r\n").encode())
+        resp = self.irc.recv(2048)
+        print(resp.decode())
         for channel in channels: 
             self.irc.send(("JOIN #" + channel + "\r\n").encode())
             self.logger.info(f'Joined {channel}')
