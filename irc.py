@@ -45,7 +45,8 @@ class IRC:
         for channel in channels: 
             self.irc.send(("JOIN #" + channel + "\r\n").encode())
             self.logger.info(f'Joined {channel}')
-            time.sleep(1.6)
+            # rate limit for joins is 50 per 15 seconds
+            time.sleep(0.31)
 
     def parse_line(self, line):
         event = {
