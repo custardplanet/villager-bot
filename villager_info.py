@@ -36,6 +36,7 @@ class VillagerInfo:
 
         self.villagers = villagers[0]
 
+    def connect(self):
         conn = sqlite3.connect(self.config['db'])
         cursor = conn.cursor()
 
@@ -51,11 +52,11 @@ class VillagerInfo:
         channels.add('isabellesays')
 
         irc = IRC()
-        irc.connect(config['server'],
-            config['port'],
+        irc.connect(self.config['server'],
+            self.config['port'],
             channels,
-            config['nick'],
-            config['oauth'])
+            self.config['nick'],
+            self.config['oauth'])
         self.irc = irc
 
     def say_info(self, channel, command, sent_time):
@@ -130,8 +131,14 @@ class VillagerInfo:
         self.logger.info(f'HELPED')
 
     def run_forever(self):
+        self.connect()
+
         while True:
-            events = self.irc.read_events()
+            try:
+                events = self.irc.read_events()
+            except RuntimeError:
+                self.connect()
+                continue
 
             for event in events:
                 if (event['code'] == 'PRIVMSG' and

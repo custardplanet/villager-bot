@@ -54,6 +54,9 @@ class IRC:
             # rate limit for joins is 50 per 15 seconds
             time.sleep(0.31)
 
+    def disconnect(self):
+        self.irc.close()
+
     def parse_line(self, line):
         event = {
             'tags': '',
@@ -93,6 +96,11 @@ class IRC:
 
         while True:
             message = self.irc.recv(2048)
+
+            if not message:
+                self.disconnect()
+                raise RuntimeError('Socket closed unexpectedly') 
+                
             message = message.decode()
             lines += message
 
