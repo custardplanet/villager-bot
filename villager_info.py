@@ -35,6 +35,7 @@ class VillagerInfo:
             villagers = json.load(f)
 
         self.villagers = villagers[0]
+        self.cooldowns = {}
 
     def connect(self):
         conn = sqlite3.connect(self.config['db'])
@@ -82,6 +83,25 @@ class VillagerInfo:
             response_time = datetime.datetime.now() - sent_time
             self.logger.info(f'{channel} - {response_time.total_seconds()} - {tokens[1]} - {villager_name} - NOT FOUND')
             return
+
+        if channel not in self.cooldowns:
+            cooldown = datetime.datetime.now() + datetime.timedelta(seconds=5)
+            self.cooldowns[channel] = { villager_name: cooldown }
+        elif channel in self.cooldowns and villager_name in self.cooldowns[channel]:
+            if self.cooldowns[channel][villager_name] > datetime.datetime.now():
+                self.logger.info(f'{channel} - ON COOLDOWN - {villager_name}')
+                return
+            else:
+                del self.cooldowns[channel][villager_name]
+        elif channel in self.cooldowns and villager_name not in self.cooldowns[channel]:
+            cooldown = datetime.datetime.now() + datetime.timedelta(seconds=5)
+            self.cooldowns[channel][villager_name] = cooldown
+
+        # clean up cooldowns
+        if channel in self.cooldowns:
+            for villager in list(self.cooldowns[channel]):
+                if self.cooldowns[channel][villager] <= datetime.datetime.now():
+                    del self.cooldowns[channel][villager]
 
         info = self.villagers[villager_name]
         message = f"{info['name']} is a {info['personality'].lower()} {info['species'].lower()}, {info['phrase']}! More info: {info['link']}"
