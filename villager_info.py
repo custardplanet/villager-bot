@@ -14,17 +14,17 @@ class VillagerInfo:
     def __init__(self, config):
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
-        
+
         handler = TimedRotatingFileHandler(filename='logs/villager_info.log', when='midnight')
         handler.setLevel(logging.DEBUG)
-        
+
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
-        
+
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         ch.setFormatter(formatter)
-        
+
         logger.addHandler(handler)
         logger.addHandler(ch)
         self.logger = logger
@@ -54,11 +54,33 @@ class VillagerInfo:
 
         irc = IRC()
         irc.connect(self.config['server'],
-            self.config['port'],
-            channels,
-            self.config['nick'],
-            self.config['oauth'])
+                    self.config['port'],
+                    channels,
+                    self.config['nick'],
+                    self.config['oauth'])
         self.irc = irc
+
+    def say_bday(self, channel, command, sent_time):
+        sent_time = datetime.datetime.fromtimestamp(sent_time / 1000)
+
+        tokens = command.split(None, 1);
+        if len(tokens) < 2:
+            self.irc.privmsg(channel, 'Usage: !vbday <birthday>\n '
+                                      'for example: !vbday January 5th')
+            return
+
+        samebday = list()
+        for i in self.villagers:
+            if i['birthday'] == tokens[1]:
+                samebday.append(i['name'])
+
+        if len(samebday) == 0:
+            self.irc.privmsg(channel, "I'm sorry, no villagers have that brithday")
+        elif len(samebday) == 1:
+            self.irc.privmsg(channel, "You share a birthday with the villagers " + samebday[0] + ".")
+        elif len(samebday) == 2:
+            self.irc.privmsg(channel,
+                             "You share a birthday with the villagers " + samebday[0] + ", and " + samebday[1] + ".")
 
     def say_info(self, channel, command, sent_time):
         sent_time = datetime.datetime.fromtimestamp(sent_time / 1000)
@@ -66,7 +88,7 @@ class VillagerInfo:
         tokens = command.split(None, 1)
         if len(tokens) < 2:
             self.irc.privmsg(channel,
-                'Usage: !villager <villager name>')
+                             'Usage: !villager <villager name>')
             return
 
         villager_name = tokens[1].lower().replace(' ', '_')
@@ -86,7 +108,7 @@ class VillagerInfo:
 
         if channel not in self.cooldowns:
             cooldown = datetime.datetime.now() + datetime.timedelta(seconds=5)
-            self.cooldowns[channel] = { villager_name: cooldown }
+            self.cooldowns[channel] = {villager_name: cooldown}
         elif channel in self.cooldowns and villager_name in self.cooldowns[channel]:
             if self.cooldowns[channel][villager_name] > datetime.datetime.now():
                 self.logger.info(f'{channel} - ON COOLDOWN - {villager_name}')
@@ -162,7 +184,7 @@ class VillagerInfo:
 
             for event in events:
                 if (event['code'] == 'PRIVMSG' and
-                    event['message'].startswith('!villager')):
+                        event['message'].startswith('!villager')):
                     self.say_info(event['channel'][1:],
                                   event['message'],
                                   int(event['tags']['tmi-sent-ts']))
@@ -181,3 +203,10 @@ class VillagerInfo:
                       event['channel'][1:] == 'isabellesays' and
                       event['message'].startswith('!leave')):
                     self.handle_remove(event['tags']['display-name'].lower())
+
+                elif (event['code'] == 'PRIVMSG' and
+                      event['channel'][1:] == 'isabellesays' and
+                      event['message'].startswith('!vbday')):
+                    self.say_bday(event['channel'][1:],
+                                  event['message'],
+                                  int(event['tags']['tmi-sent-ts']))
