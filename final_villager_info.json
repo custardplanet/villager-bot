@@ -4274,7 +4274,7 @@
             "image": "https://nookipedia.com/w/images/7/73/Faith_PG.png",
             "quote": "Unknown",
             "gender": "Female",
-            "personality": "Normal",
+            "personality": "Uchi",
             "species": "Koala",
             "birthday": "Unknown",
             "sign": "Aries",
@@ -12899,7 +12899,7 @@
             "species": "Anteater",
             "birthday": "Unknown",
             "sign": "Aquarius",
-            "phrase": "whiiifff",
+            "phrase": "zoozooroo",
             "clothes": "Hot Spring Shirt",
             "islander-favorite": "N/A",
             "islander-allergic": "N/A",
@@ -12964,6 +12964,78 @@
             "link": "https://nookipedia.com/wiki/%C3%89toile",
             "updated": "4/22/2020",
             "cached": "04/27/2020 18:42"
+        },
+        "sasha": {
+            "name": "Sasha",
+            "personality": "Lazy",
+            "species": "Rabbit",
+            "phrase": "hoppity"
+        },
+        "ione": {
+            "name": "Ione",
+            "personality": "Normal",
+            "species": "Squirrel",
+            "phrase": "gleam"
+        },
+        "tiansheng": {
+            "name": "Tiansheng",
+            "personality": "Jock",
+            "species": "Monkey",
+            "phrase": "wuwu"
+        },
+        "shino": {
+            "name": "Shino",
+            "personality": "Peppy",
+            "species": "Deer",
+            "phrase": "okaaay"
+        },
+        "marlo": {
+            "name": "Marlo",
+            "personality": "Cranky",
+            "species": "Hamster",
+            "phrase": "gabeesh"
+        },
+        "petri": {
+            "name": "Petri",
+            "personality": "Snooty",
+            "species": "Mouse",
+            "phrase": "mmmhmm"
+        },
+        "cephalobot": {
+            "name": "Cephalobot",
+            "personality": "Smug",
+            "species": "Octopus",
+            "phrase": "donk donk"
+        },
+        "quinn": {
+            "name": "Quinn",
+            "personality": "Uchi",
+            "species": "Eagle",
+            "phrase": "proper"
+        },
+        "azalea": {
+            "name": "Azalea",
+            "personality": "Snooty",
+            "species": "Rhinoceros",
+            "phrase": "merci"
+        },
+        "chabwick": {
+            "name": "Chabwick",
+            "personality": "Lazy",
+            "species": "Penguin",
+            "phrase": "blargh"
+        },
+        "frett": {
+            "name": "Frett",
+            "personality": "Cranky",
+            "species": "Dog",
+            "phrase": "goshers"
+        },
+        "roswell": {
+            "name": "Roswell",
+            "personality": "Smug",
+            "species": "Alligator",
+            "phrase": "spaaace"
         }
     }
 ]
