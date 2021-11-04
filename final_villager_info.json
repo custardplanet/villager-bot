@@ -12969,73 +12969,85 @@
             "name": "Sasha",
             "personality": "Lazy",
             "species": "Rabbit",
-            "phrase": "hoppity"
+            "phrase": "hoppity",
+            "link": "https://nookipedia.com/wiki/Sasha"
         },
         "ione": {
             "name": "Ione",
             "personality": "Normal",
             "species": "Squirrel",
-            "phrase": "gleam"
+            "phrase": "gleam",
+            "link": "https://nookipedia.com/wiki/Ione"
         },
         "tiansheng": {
             "name": "Tiansheng",
             "personality": "Jock",
             "species": "Monkey",
-            "phrase": "wuwu"
+            "phrase": "wuwu",
+            "link": "https://nookipedia.com/wiki/Tiansheng"
         },
         "shino": {
             "name": "Shino",
             "personality": "Peppy",
             "species": "Deer",
-            "phrase": "okaaay"
+            "phrase": "okaaay",
+            "link": "https://nookipedia.com/wiki/Shino"
         },
         "marlo": {
             "name": "Marlo",
             "personality": "Cranky",
             "species": "Hamster",
-            "phrase": "gabeesh"
+            "phrase": "gabeesh",
+            "link": "https://nookipedia.com/wiki/Marlo"
         },
         "petri": {
             "name": "Petri",
             "personality": "Snooty",
             "species": "Mouse",
-            "phrase": "mmmhmm"
+            "phrase": "mmmhmm",
+            "link": "https://nookipedia.com/wiki/Petri"
         },
         "cephalobot": {
             "name": "Cephalobot",
             "personality": "Smug",
             "species": "Octopus",
-            "phrase": "donk donk"
+            "phrase": "donk donk",
+            "link": "https://nookipedia.com/wiki/Cephalobot"
         },
         "quinn": {
             "name": "Quinn",
             "personality": "Uchi",
             "species": "Eagle",
-            "phrase": "proper"
+            "phrase": "proper",
+            "link": "https://nookipedia.com/wiki/Quinn"
         },
         "azalea": {
             "name": "Azalea",
             "personality": "Snooty",
             "species": "Rhinoceros",
-            "phrase": "merci"
+            "phrase": "merci",
+            "link": "https://nookipedia.com/wiki/Azalea"
         },
         "chabwick": {
             "name": "Chabwick",
             "personality": "Lazy",
             "species": "Penguin",
-            "phrase": "blargh"
+            "phrase": "blargh",
+            "link": "https://nookipedia.com/wiki/Chabwick"
         },
         "frett": {
             "name": "Frett",
             "personality": "Cranky",
             "species": "Dog",
-            "phrase": "goshers"
+            "phrase": "goshers",
+            "link": "https://nookipedia.com/wiki/Frett"
         },
         "roswell": {
             "name": "Roswell",
             "personality": "Smug",
             "species": "Alligator",
-            "phrase": "spaaace"
+            "phrase": "spaaace",
+            "link": "https://nookipedia.com/wiki/Roswell"
         }
     }
 ]
